@@ -4,53 +4,55 @@
 # ==================================================================
 # Initial Setup
 # ------------------------------------------------------------------
-    
-    FROM paperspace/gradient-base:pt112-tf29-jax0317-py39-20221019
+
+FROM paperspace/gradient-base:pt112-tf29-jax0317-py39-20221019
 
 
 # ==================================================================
 # Directories & Tools
 # ------------------------------------------------------------------
 
-    RUN mkdir /content && \
-        apt-get update -y && \
-        apt-get install -y graphviz
+RUN mkdir /content && \
+    apt-get update -y && \
+    apt-get install -y graphviz
 
 
 # ==================================================================
 # Mambaforge
 # ------------------------------------------------------------------
 
-    # Based on https://github.com/conda-forge/miniforge
-    
-    RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh" && \
-        bash Mambaforge-$(uname)-$(uname -m).sh -b && \
-        ~/mambaforge/condabin/conda init && \
-        /root/mambaforge/bin/mamba install jupyter jupyterlab ipython -c conda-forge -y && \
-        rm Mambaforge-$(uname)-$(uname -m).sh
-    ENV PATH=$PATH:/root/mambaforge/bin
+# Based on https://github.com/conda-forge/miniforge
+COPY env.yaml /tmp/env.yaml
+
+RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh" && \
+    bash Mambaforge-$(uname)-$(uname -m).sh -b && \
+    ~/mambaforge/condabin/conda init && \
+    /root/mambaforge/bin/mamba install jupyter jupyterlab ipython -c conda-forge -y && \
+    /root/mambaforge/bin/mamba env update -f /tmp/env.yaml -n base --prune && \
+    rm Mambaforge-$(uname)-$(uname -m).sh
+ENV PATH=$PATH:/root/mambaforge/bin
 
 
 # ==================================================================
 # Fast.ai
 # ------------------------------------------------------------------
 
-    RUN python3 -m pip install --upgrade pip && \
-        python3 -m pip install --upgrade fastai >=2.6.0 && \
-        python3 -m pip install --upgrade fastbook && \
-        python3 -m pip install --upgrade jupyterlab-git
+# RUN python3 -m pip install --upgrade pip && \
+#     python3 -m pip install --upgrade fastai >=2.6.0 && \
+#     python3 -m pip install --upgrade fastbook && \
+#     python3 -m pip install --upgrade jupyterlab-git
 
 
 # ==================================================================
 # Config & Startup
 # ------------------------------------------------------------------
 
-    ENV USER fastai
-    WORKDIR /notebooks
-    RUN chmod -R a+w /notebooks
-    WORKDIR /notebooks
+ENV USER fastai
+WORKDIR /notebooks
+RUN chmod -R a+w /notebooks
+WORKDIR /notebooks
 
-    COPY run.sh /run.sh
-    RUN chmod +x /run.sh
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
 
-    CMD ["/run.sh"]
+CMD ["/run.sh"]
