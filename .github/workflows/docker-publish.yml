@@ -37,8 +37,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
-      - run: ./free.sh
-        shell: bash
+#      - run: ./free.sh
+#        shell: bash
 
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
