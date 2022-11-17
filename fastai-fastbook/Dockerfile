@@ -27,12 +27,14 @@ COPY env.yaml /tmp/env.yaml
 RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh" && \
     bash Mambaforge-$(uname)-$(uname -m).sh -b && \
     ~/mambaforge/condabin/conda init && \
-    /root/mambaforge/bin/mamba install jupyter jupyterlab ipython -c conda-forge -y && \
-    /root/mambaforge/bin/mamba install fastbook -c fastchan -y
-RUN /root/mambaforge/bin/mamba env update -f /tmp/env.yaml -n base --prune
+    /root/mambaforge/bin/mamba install jupyter jupyterlab ipython -c conda-forge -y
+#    /root/mambaforge/bin/mamba install fastbook -c fastchan -y
+#RUN /root/mambaforge/bin/mamba env update -f /tmp/env.yaml -n base --prune
+RUN /root/mambaforge/bin/mamba env create -f /tmp/env.yaml
 #    rm Mambaforge-$(uname)-$(uname -m).sh
 
 ENV PATH=$PATH:/root/mambaforge/bin
+RUN echo "conda activate deep-learning" >> /root/.bashrc
 
 
 # ==================================================================
