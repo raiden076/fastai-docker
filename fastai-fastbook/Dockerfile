@@ -28,9 +28,10 @@ RUN wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mamb
     bash Mambaforge-$(uname)-$(uname -m).sh -b && \
     ~/mambaforge/condabin/conda init && \
     /root/mambaforge/bin/mamba install jupyter jupyterlab ipython -c conda-forge -y && \
-    /root/mambaforge/bin/mamba install fastbook -c fastchan -y && \
-    /root/mambaforge/bin/mamba env update -f /tmp/env.yaml -n base --prune && \
-    rm Mambaforge-$(uname)-$(uname -m).sh
+    /root/mambaforge/bin/mamba install fastbook -c fastchan -y
+RUN /root/mambaforge/bin/mamba env update -f /tmp/env.yaml -n base --prune
+#    rm Mambaforge-$(uname)-$(uname -m).sh
+
 ENV PATH=$PATH:/root/mambaforge/bin
 
 
